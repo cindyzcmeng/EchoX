@@ -28,7 +28,7 @@ function App() {
     setCardData(prev => ({ ...prev, platform }))
   }
 
-  const handleESP32Image = (image: string) => {
+  const handleEchoXImage = (image: string) => {
     setCardData(prev => ({ ...prev, image }))
   }
 
@@ -49,10 +49,10 @@ function App() {
           <PhotoUpload onImageUpload={handleImageUpload} />
         </section>
 
-        {/* ESP32 Interface */}
+        {/* EchoX Interface */}
         <section className="space-y-4">
-          <h2 className="text-lg font-semibold text-gray-800">📷 ESP32 相机</h2>
-          <ESP32Interface onImageReceived={handleESP32Image} />
+          <h2 className="text-lg font-semibold text-gray-800">📷 EchoX 相机</h2>
+          <ESP32Interface onImageReceived={handleEchoXImage} />
         </section>
 
         {/* Text Input */}
