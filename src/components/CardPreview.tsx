@@ -129,21 +129,16 @@ export function CardPreview({ cardData }: CardPreviewProps) {
           className="mx-auto bg-white rounded-lg shadow-lg overflow-hidden flex flex-col"
           style={{
             maxWidth: '320px',
-            backgroundColor: config.bgColor,
-            minHeight: '400px'
+            backgroundColor: config.bgColor
           }}
         >
           {/* 图片区域 */}
-          <div className="relative flex-1 flex items-center justify-center bg-gray-50">
+          <div className="relative">
             <img
               src={cardData.image}
               alt="上传的照片"
-              className="max-w-full max-h-full object-contain"
+              className="w-full h-auto block"
               crossOrigin="anonymous"
-              style={{
-                maxHeight: cardData.platform === 'weibo' ? '200px' : 
-                          cardData.platform === 'xiaohongshu' ? '300px' : '250px'
-              }}
             />
             {cardData.platform === 'xiaohongshu' && (
               <div className="absolute top-4 right-4 bg-white bg-opacity-90 rounded-full px-3 py-1">
