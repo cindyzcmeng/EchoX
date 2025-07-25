@@ -12,32 +12,80 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
   }
   
   * {
     @apply box-border;
+  }
+  
+  /* 移动端优化 */
+  @media (max-width: 768px) {
+    html {
+      font-size: 16px; /* 防止iOS缩放 */
+    }
+    
+    input, textarea, select, button {
+      font-size: 16px; /* 防止iOS键盘缩放 */
+    }
   }
 }
 
 @layer components {
   .mobile-container {
     @apply max-w-md mx-auto bg-white min-h-screen;
+    -webkit-overflow-scrolling: touch;
   }
   
   .btn-primary {
     @apply bg-primary-500 hover:bg-primary-600 text-white font-medium py-3 px-6 rounded-lg transition-colors duration-200 active:scale-95;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
   }
   
   .btn-secondary {
     @apply bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-3 px-6 rounded-lg transition-colors duration-200 active:scale-95;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
   }
   
   .card {
     @apply bg-white rounded-xl shadow-sm border border-gray-100 p-4;
+    touch-action: manipulation;
   }
   
   .input-field {
     @apply w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all duration-200;
+    -webkit-appearance: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  /* 触摸友好的按钮 */
+  .touch-button {
+    @apply relative overflow-hidden;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+  
+  .touch-button:active {
+    @apply scale-95;
+  }
+  
+  /* 自定义滚动条（仅Webkit） */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 4px;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-track {
+    @apply bg-gray-100 rounded;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-gray-300 rounded;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    @apply bg-gray-400;
   }
 }
 
@@ -50,7 +98,40 @@
     padding-bottom: env(safe-area-inset-bottom);
   }
   
+  .safe-left {
+    padding-left: env(safe-area-inset-left);
+  }
+  
+  .safe-right {
+    padding-right: env(safe-area-inset-right);
+  }
+  
   .touch-manipulation {
     touch-action: manipulation;
+  }
+  
+  .no-tap-highlight {
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  /* 移动端视频优化 */
+  .mobile-video {
+    object-fit: cover;
+    -webkit-playsinline: true;
+  }
+  
+  /* 防止文本选择 */
+  .no-select {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+  
+  /* 移动端表单优化 */
+  @media (max-width: 768px) {
+    .mobile-input {
+      font-size: 16px !important; /* 防止iOS缩放 */
+    }
   }
 } 
