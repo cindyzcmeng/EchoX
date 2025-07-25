@@ -126,20 +126,24 @@ export function CardPreview({ cardData }: CardPreviewProps) {
       <div className="bg-gray-100 p-4 rounded-lg">
         <div
           ref={cardRef}
-          className="mx-auto bg-white rounded-lg shadow-lg overflow-hidden"
+          className="mx-auto bg-white rounded-lg shadow-lg overflow-hidden flex flex-col"
           style={{
-            aspectRatio: config.aspectRatio,
             maxWidth: '320px',
-            backgroundColor: config.bgColor
+            backgroundColor: config.bgColor,
+            minHeight: '400px'
           }}
         >
           {/* 图片区域 */}
-          <div className="relative h-2/3">
+          <div className="relative flex-1 flex items-center justify-center bg-gray-50">
             <img
               src={cardData.image}
               alt="上传的照片"
-              className="w-full h-full object-cover"
+              className="max-w-full max-h-full object-contain"
               crossOrigin="anonymous"
+              style={{
+                maxHeight: cardData.platform === 'weibo' ? '200px' : 
+                          cardData.platform === 'xiaohongshu' ? '300px' : '250px'
+              }}
             />
             {cardData.platform === 'xiaohongshu' && (
               <div className="absolute top-4 right-4 bg-white bg-opacity-90 rounded-full px-3 py-1">
@@ -149,11 +153,11 @@ export function CardPreview({ cardData }: CardPreviewProps) {
           </div>
 
           {/* 文字区域 */}
-          <div className="h-1/3 p-4 flex flex-col justify-center">
+          <div className="p-4 border-t border-gray-100">
             {cardData.text ? (
-              <div className="space-y-2">
+              <div className="space-y-3">
                 <p 
-                  className="text-sm leading-relaxed"
+                  className="text-sm leading-relaxed break-words"
                   style={{ 
                     color: config.textColor,
                     fontSize: cardData.platform === 'xiaohongshu' ? '13px' : '14px'
@@ -161,13 +165,13 @@ export function CardPreview({ cardData }: CardPreviewProps) {
                 >
                   {cardData.text}
                 </p>
-                <div className="flex items-center justify-between text-xs text-gray-500">
-                  <span>EchoX</span>
+                <div className="flex items-center justify-between text-xs text-gray-500 pt-2 border-t border-gray-50">
+                  <span className="font-medium">EchoX</span>
                   <span>{new Date().toLocaleDateString('zh-CN')}</span>
                 </div>
               </div>
             ) : (
-              <div className="text-center text-gray-400 text-sm">
+              <div className="text-center text-gray-400 text-sm py-4">
                 在上方添加文字内容
               </div>
             )}
