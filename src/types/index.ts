@@ -4,6 +4,11 @@ export interface CardData {
   image: string | null
   text: string
   platform: SocialPlatform
+  // 新增AI生成相关字段
+  videoUrl?: string
+  extractedFrameUrl?: string
+  transcribedText?: string
+  aiGeneratedText?: string
 }
 
 export interface PlatformConfig {
@@ -31,4 +36,31 @@ export interface CardTemplate {
   backgroundColor: string
   textColor: string
   borderRadius: number
+}
+
+// 新增AI和视频相关接口
+export interface VideoRecordingData {
+  videoBlob: Blob
+  videoUrl: string
+  duration: number
+}
+
+export interface AIServiceConfig {
+  baseUrl: string
+  apiKey: string
+}
+
+export interface TranscriptionResult {
+  text: string
+  confidence?: number
+  language?: string
+}
+
+export interface LLMGenerationResult {
+  text: string
+  usage?: {
+    prompt_tokens: number
+    completion_tokens: number
+    total_tokens: number
+  }
 } 
