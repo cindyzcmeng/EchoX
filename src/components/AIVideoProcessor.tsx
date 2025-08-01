@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react'
+import { useState, useCallback } from 'react'
 import { VideoCapture } from './VideoCapture'
 import { extractFrameFromVideo, videoToFile } from '../utils/videoUtils'
 import { createAIService } from '../services/aiService'
@@ -12,7 +12,7 @@ interface AIVideoProcessorProps {
 
 export function AIVideoProcessor({ platform, onContentGenerated }: AIVideoProcessorProps) {
   const [processingStage, setProcessingStage] = useState<
-    'recording' | 'extracting' | 'transcribing' | 'generating' | 'completed' | 'error'
+    'recording' | 'extracting' | 'transcribing' | 'ready' | 'generating' | 'completed' | 'error'
   >('recording')
   const [extractedImage, setExtractedImage] = useState<string | null>(null)
   const [transcribedText, setTranscribedText] = useState<string>('')
@@ -44,9 +44,23 @@ export function AIVideoProcessor({ platform, onContentGenerated }: AIVideoProces
         setTranscribedText('音频转录失败，将基于图片生成文案')
       }
 
+      // 停止在这里，等待用户点击生成按钮
+      setProcessingStage('ready')
+
+    } catch (err) {
+      console.error('AI处理失败:', err)
+      setError(err instanceof Error ? err.message : '处理失败，请重试')
+      setProcessingStage('error')
+    }
+  }, [platform, onContentGenerated])
+
+  const handleGenerateContent = useCallback(async () => {
+    try {
+      setError(null)
       setProcessingStage('generating')
 
-      // 3. 使用LLM生成文案
+      // 使用LLM生成文案
+      const aiService = createAIService()
       const contentResult = await aiService.generateContent(
         transcribedText,
         platform
@@ -55,22 +69,21 @@ export function AIVideoProcessor({ platform, onContentGenerated }: AIVideoProces
 
       setProcessingStage('completed')
 
-      // 4. 回调传递生成的内容
+      // 回调传递生成的内容
       onContentGenerated({
-        image: frameImage,
+        image: extractedImage || undefined,
         text: contentResult.text,
         transcribedText: transcribedText,
-        extractedFrameUrl: frameImage,
-        videoUrl: videoData.videoUrl,
+        extractedFrameUrl: extractedImage || undefined,
         aiGeneratedText: contentResult.text
       })
 
     } catch (err) {
-      console.error('AI处理失败:', err)
-      setError(err instanceof Error ? err.message : '处理失败，请重试')
+      console.error('AI生成失败:', err)
+      setError(err instanceof Error ? err.message : '生成失败，请重试')
       setProcessingStage('error')
     }
-  }, [platform, onContentGenerated])
+  }, [platform, extractedImage, transcribedText, onContentGenerated])
 
   const resetProcess = () => {
     setProcessingStage('recording')
@@ -88,6 +101,8 @@ export function AIVideoProcessor({ platform, onContentGenerated }: AIVideoProces
         return { icon: ImageIcon, text: '提取视频画面...', color: 'text-yellow-500' }
       case 'transcribing':
         return { icon: Type, text: '转录音频内容...', color: 'text-purple-500' }
+      case 'ready':
+        return { icon: Brain, text: '准备就绪，点击生成文案', color: 'text-blue-600' }
       case 'generating':
         return { icon: Brain, text: '生成智能文案...', color: 'text-green-500' }
       case 'completed':
@@ -152,6 +167,19 @@ export function AIVideoProcessor({ platform, onContentGenerated }: AIVideoProces
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
             <p className="text-sm text-blue-800">{transcribedText}</p>
           </div>
+        </div>
+      )}
+
+      {/* AI生成按钮 */}
+      {processingStage === 'ready' && (
+        <div className="flex justify-center">
+          <button
+            onClick={handleGenerateContent}
+            className="btn-primary flex items-center space-x-2 px-6 py-3"
+          >
+            <Brain className="w-5 h-5" />
+            <span>AI生成社媒分享图</span>
+          </button>
         </div>
       )}
 
